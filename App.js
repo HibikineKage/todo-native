@@ -1,17 +1,8 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-
-export default class App extends React.Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text>Open up App.js to start working on your app!</Text>
-        <Text>Changes you make will automatically reload.</Text>
-        <Text>Shake your phone to open the developer menu.</Text>
-      </View>
-    );
-  }
-}
+import { Provider } from 'react-redux';
+import Todo from './app/todo';
+import initStore from './app/store';
 
 const styles = StyleSheet.create({
   container: {
@@ -21,3 +12,35 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+
+const store = initStore();
+export default class App extends Component {
+  async constructor(props) {
+    super(props);
+    this.state = { loading: false };
+    /* eslint-disable global-require */
+    /*await Expo.Font.loadAsync({
+      Roboto: require('native-base/Fonts/Roboto.ttf'),
+      Roboto_medium: require('native-base/Fonts/Roboto_medium.ttf'),
+    }); */
+    /* eslint-enable global-require */
+  }
+
+  render() {
+    const { loading } = this.state;
+    if (loading) {
+      return (
+        <View>
+          <Text>Loading...</Text>
+        </View>
+      );
+    }
+    return (
+      <Provider store={store}>
+        <View style={styles.container}>
+          <Todo />
+        </View>
+      </Provider>
+    );
+  }
+}
